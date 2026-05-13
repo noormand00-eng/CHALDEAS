@@ -1,3 +1,9 @@
 {
-  "outputDirectory": "public"
+  "version": 2,
+  "outputDirectory": "public",
+  "functions": {
+    "api/*.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
 }
