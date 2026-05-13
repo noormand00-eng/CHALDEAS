@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHALDEAS — Full Life Mapping</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Cairo:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="starfield"></div>
+
+<div class="page">
+
+  <!-- ═══ HEADER ═══ -->
+  <header>
+    <svg class="brand-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="goldGrad" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#e8cc80"/>
+          <stop offset="50%" stop-color="#c8a84b"/>
+          <stop offset="100%" stop-color="#8a6e2a"/>
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <circle cx="100" cy="100" r="92" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.8"/>
+      <circle cx="100" cy="100" r="85" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" opacity="0.4"/>
+      <g fill="url(#goldGrad)" opacity="0.6">
+        <circle cx="100" cy="8" r="1.5"/>
+        <circle cx="100" cy="192" r="1.5"/>
+        <circle cx="8" cy="100" r="1.5"/>
+        <circle cx="192" cy="100" r="1.5"/>
+      </g>
+      <polygon points="100,14 111,68 154,46 132,89 186,100 132,111 154,154 111,132 100,186 89,132 46,154 68,111 14,100 68,89 46,46 89,68"
+        fill="none" stroke="url(#goldGrad)" stroke-width="1.8" filter="url(#glow)"/>
+      <polygon points="100,38 162,100 100,162 38,100" fill="none" stroke="url(#goldGrad)" stroke-width="1.2" opacity="0.7"/>
+      <polygon points="100,55 145,100 100,145 55,100" fill="none" stroke="url(#goldGrad)" stroke-width="1" opacity="0.5"/>
+      <circle cx="100" cy="100" r="28" fill="none" stroke="url(#goldGrad)" stroke-width="1.2" opacity="0.8"/>
+      <polygon points="100,72 104,95 127,100 104,105 100,128 96,105 73,100 96,95" fill="url(#goldGrad)" opacity="0.9"/>
+      <g fill="url(#goldGrad)">
+        <polygon points="100,6 103,14 100,18 97,14"/>
+        <polygon points="100,194 103,186 100,182 97,186"/>
+        <polygon points="6,100 14,103 18,100 14,97"/>
+        <polygon points="194,100 186,103 182,100 186,97"/>
+      </g>
+    </svg>
+
+    <div class="brand-name">C H A L D E A S</div>
+    <div class="brand-tagline">Patterns · Mapping · Transformation</div>
+
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond-sm"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-diamond-sm"></div>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="page-title">Full Life Mapping System</div>
+    <div class="page-subtitle">Complete Cosmic Blueprint</div>
+  </header>
+
+  <!-- SYSTEM NAV -->
+  <div class="system-nav" id="systemNav">
+    <div class="sys-tab" id="tabNum">
+      <span class="sys-tab-dot"></span>Numerology
+    </div>
+    <div class="sys-tab" id="tabManzil">
+      <span class="sys-tab-dot"></span>Manzil
+    </div>
+    <div class="sys-tab" id="tabZodiak">
+      <span class="sys-tab-dot"></span>Zodiak
+    </div>
+    <div class="sys-tab" id="tabWeton">
+      <span class="sys-tab-dot"></span>Weton
+    </div>
+    <div class="sys-tab" id="tabSynth">
+      <span class="sys-tab-dot"></span>Synthesis
+    </div>
+  </div>
+
+  <!-- ═══ FORM ═══ -->
+  <div class="form-card" id="formSection">
+    <div class="form-title">Data Klien</div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Nama Lengkap</label>
+        <input type="text" id="inputNama" placeholder="Nama lengkap (nama lahir)..." autocomplete="off" oninput="livePreview()"/>
+        <div class="form-hint">Gunakan nama lahir untuk akurasi Destiny Number</div>
+      </div>
+      <div class="form-group">
+        <label>Tanggal Lahir</label>
+        <input type="date" id="inputTanggal" oninput="livePreview()"/>
+      </div>
+      <div class="form-group">
+        <label>Jam Lahir</label>
+        <input type="time" id="inputJam"/>
+      </div>
+      <div class="form-group full">
+        <label>Kota Lahir</label>
+        <div class="city-wrapper">
+          <input type="text" id="inputKota" placeholder="Ketik nama kota..." autocomplete="off"/>
+          <div class="city-suggestions" id="citySuggestions"></div>
+        </div>
+        <div class="city-info" id="cityInfo"></div>
+        <div class="error-msg" id="cityError"></div>
+        <div class="form-hint">Diperlukan untuk kalkulasi Manzil (posisi bulan)</div>
+      </div>
+    </div>
+
+    <!-- Live preview -->
+    <div class="preview-row" id="previewRow" style="display:none;">
+      <div class="preview-chip">
+        <div class="preview-chip-label">Life Path</div>
+        <div class="preview-chip-value pv-lp" id="pvLP">—</div>
+      </div>
+      <div class="preview-chip">
+        <div class="preview-chip-label">Destiny</div>
+        <div class="preview-chip-value pv-dest" id="pvDest">—</div>
+      </div>
+      <div class="preview-chip">
+        <div class="preview-chip-label">Zodiak</div>
+        <div class="preview-chip-value pv-zodiak" id="pvZodiak">—</div>
+      </div>
+      <div class="preview-chip">
+        <div class="preview-chip-label">Weton</div>
+        <div class="preview-chip-value pv-weton" id="pvWeton" style="font-size:14px;padding-top:4px;">—</div>
+      </div>
+    </div>
+
+    <div class="error-msg" id="formError"></div>
+    <button class="btn-calculate" onclick="startMapping()">
+      ✦ &nbsp; Reveal Full Life Mapping &nbsp; ✦
+    </button>
+  </div>
+
+  <!-- ═══ LOADING ═══ -->
+  <div id="loading">
+    <div class="loading-cosmos">
+      <div class="loading-ring-outer"></div>
+      <div class="loading-ring-inner"></div>
+    </div>
+    <div class="loading-text" id="loadingText">Initializing cosmic map...</div>
+    <div class="loading-steps" id="loadingSteps">
+      <div class="loading-step" id="lstep1"><div class="step-dot"></div>Numerology Matrix</div>
+      <div class="loading-step" id="lstep2"><div class="step-dot"></div>Manzil — Moon Station</div>
+      <div class="loading-step" id="lstep3"><div class="step-dot"></div>Solar Zodiak</div>
+      <div class="loading-step" id="lstep4"><div class="step-dot"></div>Weton & Primbon Jawa</div>
+      <div class="loading-step" id="lstep5"><div class="step-dot"></div>Compiling Blueprint</div>
+    </div>
+  </div>
+
+  <!-- ═══ RESULT ═══ -->
+  <div id="result">
+
+    <!-- Hero Header -->
+    <div class="result-hero">
+      <div class="result-name" id="resNama"></div>
+      <div class="result-birthdate" id="resBirthdate"></div>
+
+      <!-- Quick Glance Bar -->
+      <div class="glance-bar">
+        <div class="glance-cell lp">
+          <div class="glance-label">Life Path</div>
+          <div class="glance-value" id="glLP">—</div>
+          <div class="glance-sub" id="glLPName">—</div>
+        </div>
+        <div class="glance-cell dest">
+          <div class="glance-label">Destiny</div>
+          <div class="glance-value" id="glDest">—</div>
+          <div class="glance-sub" id="glDestName">—</div>
+        </div>
+        <div class="glance-cell manzil">
+          <div class="glance-label">Manzil</div>
+          <div class="glance-value" id="glManzil">—</div>
+          <div class="glance-sub" id="glManzilName">—</div>
+        </div>
+        <div class="glance-cell zodiak">
+          <div class="glance-label">Zodiak</div>
+          <div class="glance-value" id="glZodiak">—</div>
+          <div class="glance-sub" id="glZodiakEl">—</div>
+        </div>
+        <div class="glance-cell weton">
+          <div class="glance-label">Weton</div>
+          <div class="glance-value" id="glWeton">—</div>
+          <div class="glance-sub" id="glNeptu">Neptu —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── I. NUMEROLOGY ── -->
+    <div class="mapping-section" style="animation-delay:0.1s">
+      <div class="section-header">
+        <div class="section-badge num">◈ Numerologi</div>
+        <div class="section-title">Life Path & Destiny Number</div>
+      </div>
+
+      <div class="num-duo">
+        <div class="num-card lp">
+          <div class="num-type lp">Life Path Number</div>
+          <div class="num-big lp" id="resLPNum">—</div>
+          <div id="resLPMaster"></div>
+          <div class="num-name lp" id="resLPName">—</div>
+          <div class="num-keyword" id="resLPKw">—</div>
+          <div class="num-formula" id="resLPForm">—</div>
+        </div>
+        <div class="num-card dest">
+          <div class="num-type dest">Destiny Number</div>
+          <div class="num-big dest" id="resDestNum">—</div>
+          <div id="resDestMaster"></div>
+          <div class="num-name dest" id="resDestName">—</div>
+          <div class="num-keyword" id="resDestKw">—</div>
+          <div class="num-formula" id="resDestForm">—</div>
+        </div>
+      </div>
+
+      <div class="num-traits-row">
+        <div class="traits-card" id="resLPTraits"></div>
+        <div class="traits-card" id="resDestTraits"></div>
+      </div>
+
+      <div class="compat-strip" id="resCompat"></div>
+
+      <div class="interp-card num">
+        <div class="interp-label num">Interpretasi Numerologi</div>
+        <div id="interpNum"><div class="interp-loading"><div class="i-dot"></div><div class="i-dot"></div><div class="i-dot"></div><span>Generating...</span></div></div>
+      </div>
+    </div>
+
+    <!-- ── II. MANZIL ── -->
+    <div class="mapping-section" style="animation-delay:0.2s">
+      <div class="section-header">
+        <div class="section-badge manzil">☽ Manzil</div>
+        <div class="section-title">Stasiun Bulan — منازل القمر</div>
+      </div>
+
+      <div class="manzil-hero-card">
+        <div class="manzil-no-label">Manzil Bulan ke —</div>
+        <div class="manzil-no-big" id="resManzilNum">—</div>
+        <div class="manzil-roman" id="resManzilRoman">—</div>
+        <div class="manzil-arabic" id="resManzilArabic">—</div>
+        <div class="manzil-latin" id="resManzilLatin">—</div>
+        <div class="manzil-star" id="resManzilStar">—</div>
+        <div class="tags" id="resTags"></div>
+      </div>
+
+      <div class="manzil-data-grid">
+        <div class="data-cell"><div class="data-label">Derajat Bulan</div><div class="data-value" id="resDegree">—</div></div>
+        <div class="data-cell"><div class="data-label">Zodiak Bulan</div><div class="data-value" id="resZodiak">—</div></div>
+        <div class="data-cell"><div class="data-label">Fase Bulan</div><div class="data-value" id="resFase">—</div></div>
+        <div class="data-cell"><div class="data-label">Bujur Ekliptika</div><div class="data-value" id="resLong">—</div></div>
+        <div class="data-cell"><div class="data-label">Koordinat</div><div class="data-value" id="resKoord">—</div></div>
+        <div class="data-cell"><div class="data-label">Timezone</div><div class="data-value" id="resTZ">—</div></div>
+      </div>
+
+      <div class="sifat-grid" id="resSifat"></div>
+
+      <div class="interp-card manzil">
+        <div class="interp-label manzil">Interpretasi Manzil</div>
+        <div id="interpManzil"><div class="interp-loading"><div class="i-dot"></div><div class="i-dot"></div><div class="i-dot"></div><span>Generating...</span></div></div>
+      </div>
+    </div>
+
+    <!-- ── III. ZODIAK ── -->
+    <div class="mapping-section" style="animation-delay:0.3s">
+      <div class="section-header">
+        <div class="section-badge zodiak">☀ Zodiak</div>
+        <div class="section-title">Sun Sign — Tanda Matahari</div>
+      </div>
+
+      <div class="zodiak-main">
+        <div class="zodiak-sigil">
+          <div class="zodiak-symbol" id="resZodSymbol">—</div>
+          <div class="zodiak-name" id="resZodName">—</div>
+          <div class="zodiak-date-range" id="resZodRange">—</div>
+        </div>
+        <div class="zodiak-details">
+          <div class="zodiak-attr-grid" id="resZodAttr"></div>
+          <div class="zodiak-traits" id="resZodTraits"></div>
+        </div>
+      </div>
+
+      <div class="interp-card zodiak">
+        <div class="interp-label zodiak">Interpretasi Zodiak</div>
+        <div id="interpZodiak"><div class="interp-loading"><div class="i-dot"></div><div class="i-dot"></div><div class="i-dot"></div><span>Generating...</span></div></div>
+      </div>
+    </div>
+
+    <!-- ── IV. WETON ── -->
+    <div class="mapping-section" style="animation-delay:0.4s">
+      <div class="section-header">
+        <div class="section-badge weton">◉ Weton</div>
+        <div class="section-title">Weton Jawa & Primbon</div>
+      </div>
+
+      <div class="weton-main-card">
+        <div class="weton-header">
+          <div class="weton-day-display">
+            <div class="weton-day-jawa" id="resWetonFull">—</div>
+            <div class="weton-pasaran" id="resWetonDesc">—</div>
+          </div>
+          <div class="weton-neptu-display">
+            <div class="neptu-label">Total Neptu</div>
+            <div class="neptu-value" id="resNeptu">—</div>
+            <div class="neptu-breakdown" id="resNeptuBreak">—</div>
+          </div>
+        </div>
+        <div class="weton-attr-grid" id="resWetonAttr"></div>
+      </div>
+
+      <div class="primbon-grid" id="resPrimbon"></div>
+
+      <div class="interp-card weton">
+        <div class="interp-label weton">Interpretasi Weton & Primbon</div>
+        <div id="interpWeton"><div class="interp-loading"><div class="i-dot"></div><div class="i-dot"></div><div class="i-dot"></div><span>Generating...</span></div></div>
+      </div>
+    </div>
+
+    <!-- ── V. SYNTHESIS ── -->
+    <div class="mapping-section" style="animation-delay:0.5s" id="synthSection">
+      <div class="section-header">
+        <div class="section-badge synth">✦ Synthesis</div>
+        <div class="section-title">Complete Life Blueprint</div>
+      </div>
+
+      <div class="synthesis-frame">
+        <div class="synthesis-header">
+          <div class="synthesis-title">Peta Jiwa Lengkap</div>
+          <div class="synthesis-subtitle" id="synthSubtitle">—</div>
+        </div>
+        <div class="synthesis-body">
+          <div id="interpSynth">
+            <div class="interp-loading"><div class="i-dot"></div><div class="i-dot"></div><div class="i-dot"></div><span>Synthesizing all systems...</span></div>
+          </div>
+          <div class="synth-tags" id="synthTags"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="result-actions">
+      <button class="btn-action primary" onclick="window.print()">✦ Save as PDF</button>
+      <button class="btn-action" onclick="resetForm()">← New Mapping</button>
+    </div>
+
+  </div><!-- /result -->
+
+  <footer>
+    <span style="color:var(--gold)">◈</span> &nbsp; CHALDEAS &nbsp; <span style="color:var(--gold)">◈</span>
+    &nbsp;&nbsp; Numerology · Manzil · Zodiak · Weton · Synthesis
+  </footer>
+
+</div><!-- /page --><script src="app.js"></script>
+</body>
+</html>
